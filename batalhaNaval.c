@@ -3,6 +3,7 @@
 // Constantes para o tamanho do tabuleiro e dos navios
 #define TAM_TABULEIRO 10
 #define TAM_NAVIO 3
+#define NAVIO 3 // Representação de uma parte do navio no tabuleiro
 
 // Função para inicializar o tabuleiro com o valor 0 (representando água)
 void inicializarTabuleiro(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO]) {
@@ -16,21 +17,35 @@ void inicializarTabuleiro(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO]) {
 // Função para posicionar um navio horizontalmente no tabuleiro
 void posicionarNavioHorizontal(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO], int linha, int coluna) {
     for (int i = 0; i < TAM_NAVIO; i++) {
-        tabuleiro[linha][coluna + i] = 3; // 3 representa a parte de um navio
+        tabuleiro[linha][coluna + i] = NAVIO;
     }
 }
 
 // Função para posicionar um navio verticalmente no tabuleiro
 void posicionarNavioVertical(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO], int linha, int coluna) {
     for (int i = 0; i < TAM_NAVIO; i++) {
-        tabuleiro[linha + i][coluna] = 3; // 3 representa a parte de um navio
+        tabuleiro[linha + i][coluna] = NAVIO;
+    }
+}
+
+// Função para posicionar um navio diagonalmente (da esquerda para a direita, de cima para baixo)
+void posicionarNavioDiagonalPrincipal(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO], int linha, int coluna) {
+    for (int i = 0; i < TAM_NAVIO; i++) {
+        tabuleiro[linha + i][coluna + i] = NAVIO;
+    }
+}
+
+// Função para posicionar um navio diagonalmente (da direita para a esquerda, de cima para baixo)
+void posicionarNavioDiagonalSecundaria(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO], int linha, int coluna) {
+    for (int i = 0; i < TAM_NAVIO; i++) {
+        tabuleiro[linha + i][coluna - i] = NAVIO;
     }
 }
 
 // Função para exibir o tabuleiro com coordenadas
 void exibirTabuleiroComCoordenadas(int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO]) {
     // Imprime os títulos das colunas (A a J)
-    printf("   "); // Espaço para alinhar com os números das linhas
+    printf("   ");
     for (char coluna = 'A'; coluna < 'A' + TAM_TABULEIRO; coluna++) {
         printf("%c ", coluna);
     }
@@ -53,31 +68,33 @@ int main() {
     // Inicializar o tabuleiro com água
     inicializarTabuleiro(tabuleiro);
 
-    // Coordenadas iniciais dos navios
-    int linhaNavioHorizontal = 2; // Linha 3 (índice 2)
-    int colunaNavioHorizontal = 3; // Coluna D (índice 3)
-    int linhaNavioVertical = 5; // Linha 6 (índice 5)
-    int colunaNavioVertical = 6; // Coluna G (índice 6)
+    // Coordenadas iniciais para os navios
+    int linhaNavioHorizontal = 2, colunaNavioHorizontal = 3;
+    int linhaNavioVertical = 5, colunaNavioVertical = 6;
+    int linhaNavioDiagonalPrincipal = 0, colunaNavioDiagonalPrincipal = 0;
+    int linhaNavioDiagonalSecundaria = 7, colunaNavioDiagonalSecundaria = 9;
 
-    // Garantir que os navios estão dentro dos limites e não se sobrepõem
+    // Garantir que as coordenadas e tamanhos dos navios são válidos
     if (linhaNavioHorizontal < 0 || linhaNavioHorizontal >= TAM_TABULEIRO ||
-        colunaNavioHorizontal < 0 || colunaNavioHorizontal + TAM_NAVIO > TAM_TABULEIRO) {
-        printf("Erro: Coordenadas do navio horizontal inválidas.\n");
-        return 1;
-    }
-
-    if (linhaNavioVertical < 0 || linhaNavioVertical + TAM_NAVIO > TAM_TABULEIRO ||
-        colunaNavioVertical < 0 || colunaNavioVertical >= TAM_TABULEIRO) {
-        printf("Erro: Coordenadas do navio vertical inválidas.\n");
+        colunaNavioHorizontal < 0 || colunaNavioHorizontal + TAM_NAVIO > TAM_TABULEIRO ||
+        linhaNavioVertical < 0 || linhaNavioVertical + TAM_NAVIO > TAM_TABULEIRO ||
+        colunaNavioVertical < 0 || colunaNavioVertical >= TAM_TABULEIRO ||
+        linhaNavioDiagonalPrincipal < 0 || linhaNavioDiagonalPrincipal + TAM_NAVIO > TAM_TABULEIRO ||
+        colunaNavioDiagonalPrincipal < 0 || colunaNavioDiagonalPrincipal + TAM_NAVIO > TAM_TABULEIRO ||
+        linhaNavioDiagonalSecundaria < 0 || linhaNavioDiagonalSecundaria + TAM_NAVIO > TAM_TABULEIRO ||
+        colunaNavioDiagonalSecundaria - (TAM_NAVIO - 1) < 0) {
+        printf("Erro: Coordenadas dos navios inválidas.\n");
         return 1;
     }
 
     // Posicionar os navios no tabuleiro
     posicionarNavioHorizontal(tabuleiro, linhaNavioHorizontal, colunaNavioHorizontal);
     posicionarNavioVertical(tabuleiro, linhaNavioVertical, colunaNavioVertical);
+    posicionarNavioDiagonalPrincipal(tabuleiro, linhaNavioDiagonalPrincipal, colunaNavioDiagonalPrincipal);
+    posicionarNavioDiagonalSecundaria(tabuleiro, linhaNavioDiagonalSecundaria, colunaNavioDiagonalSecundaria);
 
     // Exibir o tabuleiro com coordenadas
-    printf("     BATALHA NAVAL\n");
+    printf("Tabuleiro após posicionar os navios:\n");
     exibirTabuleiroComCoordenadas(tabuleiro);
 
     return 0;
